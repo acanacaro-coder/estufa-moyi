@@ -237,20 +237,20 @@
     <h1>⚽ MOYI CUMPLE 🧱</h1>
     <p class="subtitulo">La Estufa del Refugio 🔥</p>
 
-    <div class="base-leyenda">🧱 LA BASE ESTÁ ✅</div>
+    <!-- Estufa (ladrillos) -->
+    <div class="estufa" id="estufa"></div>
 
-    <!-- Base dibujada -->
-    <div class="base-dibujo" id="baseDibujo"></div>
-
-    <!-- Puertas ya colocadas -->
+    <!-- Puertas (van sobre la base, parte inferior de la estufa) -->
     <div class="puertas">
         <div class="puerta">🚪</div>
         <div class="puerta">🚪</div>
     </div>
 
-    <!-- Estufa -->
-    <div class="estufa" id="estufa"></div>
+    <!-- Base dibujada (debajo de todo) -->
+    <div class="base-leyenda">🧱 LA BASE ESTÁ ✅</div>
+    <div class="base-dibujo" id="baseDibujo"></div>
 
+    <!-- Progreso -->
     <div class="progreso">
         <div class="barra">
             <div class="relleno" id="relleno" style="width:0%">0%</div>
@@ -267,6 +267,7 @@
         </div>
     </div>
 
+    <!-- Botones -->
     <button class="boton" onclick="abrirModal()">🧱 PONER LADRILLOS</button>
     <button class="boton secundario" onclick="verInterior()">🩻 VER INTERIOR (CORTE TRANSVERSAL)</button>
     <a class="boton secundario" href="https://drive.google.com/file/d/1GgSeMMCyLdA9kxjJWhSaqpRvQBUBnLLQ/view?usp=drivesdk" target="_blank" style="text-decoration:none; display:block; text-align:center;">📖 CHUSMEÁ EL MANUAL</a>
@@ -287,14 +288,12 @@
 
     <script>
         const PRECIO_LADRILLO = 7531.30;
-        // Base y puertas ya están, no se cuentan en el total a recaudar
-        const TOTAL_BASE = 0;
-        const PRECIO_PUERTAS = 0;
+        const TOTAL_BASE = 0; // ya está, no se cuenta
+        const PRECIO_PUERTAS = 0; // ya están, no se cuenta
         let totalDonado = 0;
         let bricksData = [];
         let modoRayosX = false;
 
-        // Generar la base dibujada (4 filas de 6 ladrillos grises)
         function generarBaseDibujo() {
             const contenedor = document.getElementById('baseDibujo');
             contenedor.innerHTML = '';
@@ -310,7 +309,6 @@
             }
         }
 
-        // Generar la estufa (20 filas)
         function generarEstufa() {
             const contenedor = document.getElementById('estufa');
             contenedor.innerHTML = '';
