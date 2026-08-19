@@ -17,13 +17,52 @@
         }
         h1 { color:#ffb347; margin-bottom:5px; font-size:26px; }
         .subtitulo { opacity:0.8; margin-bottom:20px; font-size:14px; }
-        .base {
+        .base-leyenda {
             background:#6b6b6b;
             border-radius:8px;
-            padding:15px;
+            padding:10px;
             font-weight:bold;
             margin-bottom:10px;
             border:2px solid #ffb347;
+            font-size:14px;
+        }
+        .base-dibujo {
+            display:flex;
+            flex-direction:column-reverse;
+            gap:2px;
+            margin:10px 0;
+        }
+        .base-dibujo .fila {
+            display:flex;
+            justify-content:center;
+            gap:2px;
+        }
+        .base-ladrillo {
+            width:30px;
+            height:12px;
+            background:#6b6b6b;
+            border:1px solid #aaa;
+            border-radius:2px;
+        }
+        .puertas {
+            display:flex;
+            justify-content:center;
+            gap:12px;
+            margin:8px 0;
+        }
+        .puerta {
+            width:24px;
+            height:30px;
+            background:#1a1a1a;
+            border:2px solid #ffb347;
+            border-radius:4px;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            color:white;
+            font-size:10px;
+            font-weight:bold;
+            text-shadow: none;
         }
         .estufa {
             display:flex;
@@ -198,8 +237,18 @@
     <h1>⚽ MOYI CUMPLE 🧱</h1>
     <p class="subtitulo">La Estufa del Refugio 🔥</p>
 
-    <div class="base">🧱 LA BASE ESTÁ ✅ — $110.000 juntados</div>
+    <div class="base-leyenda">🧱 LA BASE ESTÁ ✅</div>
 
+    <!-- Base dibujada -->
+    <div class="base-dibujo" id="baseDibujo"></div>
+
+    <!-- Puertas ya colocadas -->
+    <div class="puertas">
+        <div class="puerta">🚪</div>
+        <div class="puerta">🚪</div>
+    </div>
+
+    <!-- Estufa -->
     <div class="estufa" id="estufa"></div>
 
     <div class="progreso">
@@ -208,7 +257,7 @@
         </div>
         <div class="stats">
             <div class="stat">
-                <span id="totalRecaudado">$110.000</span>
+                <span id="totalRecaudado">$0</span>
                 <small>Recaudado</small>
             </div>
             <div class="stat">
@@ -238,12 +287,30 @@
 
     <script>
         const PRECIO_LADRILLO = 7531.30;
-        const PRECIO_PUERTAS = 120000;
-        const TOTAL_BASE = 110000;
-        let totalDonado = TOTAL_BASE;
+        // Base y puertas ya están, no se cuentan en el total a recaudar
+        const TOTAL_BASE = 0;
+        const PRECIO_PUERTAS = 0;
+        let totalDonado = 0;
         let bricksData = [];
         let modoRayosX = false;
 
+        // Generar la base dibujada (4 filas de 6 ladrillos grises)
+        function generarBaseDibujo() {
+            const contenedor = document.getElementById('baseDibujo');
+            contenedor.innerHTML = '';
+            for (let i = 0; i < 4; i++) {
+                const fila = document.createElement('div');
+                fila.className = 'fila';
+                for (let j = 0; j < 6; j++) {
+                    const ladrillo = document.createElement('div');
+                    ladrillo.className = 'base-ladrillo';
+                    fila.appendChild(ladrillo);
+                }
+                contenedor.appendChild(fila);
+            }
+        }
+
+        // Generar la estufa (20 filas)
         function generarEstufa() {
             const contenedor = document.getElementById('estufa');
             contenedor.innerHTML = '';
@@ -261,12 +328,6 @@
                 }
                 contenedor.appendChild(fila);
             }
-            bricksData[0].funded = PRECIO_LADRILLO;
-            bricksData[0].donors = ['Moyi'];
-            bricksData[1].funded = PRECIO_LADRILLO;
-            bricksData[1].donors = ['Grupo'];
-            bricksData[2].funded = PRECIO_LADRILLO * 0.5;
-            bricksData[2].donors = ['Marian'];
             actualizarVisual();
         }
 
@@ -297,9 +358,9 @@
             const completos = bricksData.filter(b => b.funded >= PRECIO_LADRILLO).length;
             document.getElementById('ladrillosPuestos').textContent = completos;
             const financiado = bricksData.reduce((sum, b) => sum + b.funded, 0);
-            totalDonado = TOTAL_BASE + financiado + (completos > 0 ? PRECIO_PUERTAS : 0);
+            totalDonado = financiado;
             document.getElementById('totalRecaudado').textContent = '$' + totalDonado.toLocaleString('es-AR');
-            const TOTAL_ESTIMADO = TOTAL_BASE + PRECIO_PUERTAS + bricksData.length * PRECIO_LADRILLO;
+            const TOTAL_ESTIMADO = bricksData.length * PRECIO_LADRILLO;
             const porcentaje = Math.min(100, Math.round((totalDonado / TOTAL_ESTIMADO) * 100));
             document.getElementById('relleno').style.width = porcentaje + '%';
             document.getElementById('relleno').textContent = porcentaje + '%';
@@ -371,7 +432,10 @@
             setTimeout(() => { toast.style.opacity = '0'; }, 2500);
         }
 
+        // Inicializar
+        generarBaseDibujo();
         generarEstufa();
+        actualizarVisual();
     </script>
 </body>
 </html>
